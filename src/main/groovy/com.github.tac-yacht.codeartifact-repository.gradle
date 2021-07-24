@@ -1,0 +1,22 @@
+import com.iyher.gradle.plugin.codeartifact_repository.*
+
+def codeartifact(CodeArtifactMarker marker, Closure closure) {
+	def resolver = new CodeArtifactResolver(project)
+	def expand = resolver.resolve(closure)
+	repositories.maven(closure >> expand)
+}
+
+repositories.metaClass {
+	CodeArtifact = CodeArtifactMarker.MARKER
+	maven << this.&codeartifact
+	
+	//required syncing /codeartifact-repository-gradleplugin/src/main/java/com/iyher/gradle/plugin/codeartifact_repository/CodeArtifactRepository.java
+	//dummy definition
+	//ダミー定義 無いとオリジナルのmaven生成側のクロージャー実行時に死ぬ
+	//dirty hack
+	arn = null
+	domainName = null
+	domainOwner = null
+	repository = null
+	region = null
+}
