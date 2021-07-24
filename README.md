@@ -1,0 +1,1 @@
+# codeartifact-repository-gradleplugin
