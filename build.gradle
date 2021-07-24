@@ -1,0 +1,36 @@
+plugins {
+	id 'java-gradle-plugin'
+	id 'groovy-gradle-plugin'
+	id 'maven-publish'
+	
+	id 'eclipse'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation gradleApi()
+	implementation localGroovy()
+	
+	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-codeartifact
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-codeartifact', version: '1.12.28'
+	
+	testImplementation platform('org.junit:junit-bom:5.7.2')
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.assertj:assertj-core:3.11.1'
+}
+
+group = 'com.iyher.gradle.plugin'
+version = '0.1'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+eclipse {
+	classpath {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
