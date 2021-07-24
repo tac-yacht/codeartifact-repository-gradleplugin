@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,14 +29,18 @@ public class CodeArtifactResolver {
 	}
 	
 	public Closure<Void> resolve(Closure<?> closure) {
-		@SuppressWarnings("unused")
 		CodeArtifactRepository repo = parseResource(closure);
+		
+		final URI url = repo.getUrl();
 		
 		return new Closure<Void>(null) {
 			private final Logger innerlog = LoggerFactory.getLogger(ClosureLog.class);
 			@SuppressWarnings("unused")
 			public void doCall(Object arg) {
 				innerlog.debug("extra closure");
+				
+				MavenArtifactRepository repo = (MavenArtifactRepository)getDelegate();
+				repo.setUrl(url);
 			}
 		};
 	}
