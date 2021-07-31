@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.artifacts.repositories.PasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,17 +23,29 @@ public class CodeArtifactResolver {
 	@SuppressWarnings("unused")
 	private final RepositoryHandler repositories;
 	private final Project project;
+	private final CredentialsResolver credentialResolver;
 
 	public CodeArtifactResolver(Project project) {
 		this.project = project;
 		this.repositories = project.getRepositories();
+		this.credentialResolver = new CredentialsResolver(project);
 	}
 	
-	public Closure<Void> resolve(Closure<?> closure) {
+	public Closure<?> resolve(Closure<?> closure) {
 		CodeArtifactRepository repo = parseResource(closure);
 		
-		final URI url = repo.getUrl();
+		Closure<?> result = closure;
+		result = result.andThen(buildClosureUrlOverride(repo.getUrl()));
+
+		if(null != repo.getAwsCredentialsClosure()) {
+			String password = credentialResolver.resolve(repo);
+			result = result.andThen(buildClosureCredentialsOverride(password));
+		}
 		
+		return result;
+	}
+	
+	Closure<Void> buildClosureUrlOverride(final URI url) {
 		return new Closure<Void>(null) {
 			private final Logger innerlog = LoggerFactory.getLogger(ClosureLog.class);
 			@SuppressWarnings("unused")
@@ -44,6 +57,23 @@ public class CodeArtifactResolver {
 			}
 		};
 	}
+	
+	Closure<Void> buildClosureCredentialsOverride(final String password) {
+		return new Closure<Void>(null) {
+			private final Logger innerlog = LoggerFactory.getLogger(ClosureLog.class);
+			@SuppressWarnings("unused")
+			public void doCall(Object arg) {
+				innerlog.debug("extra closure");
+				
+				MavenArtifactRepository repo = (MavenArtifactRepository)getDelegate();
+				repo.credentials(PasswordCredentials.class, target -> {
+					target.setUsername("aws");
+					target.setPassword(password);
+				});
+			}
+		};
+	}
+
 
 	CodeArtifactRepository parseResource(Closure<?> closure) {
 		log.debug("start: convert closure to codeartifact configuration");
@@ -90,7 +120,8 @@ public class CodeArtifactResolver {
 		;
 		
 
-		CodeArtifactRepository result = new CompositRepositoryExclusiveToCodeartifact();
+		CompositRepositoryExclusiveToCodeartifact result = new CompositRepositoryExclusiveToCodeartifact();
+		result.setAwsCredentialsClosure(origin.getAwsCredentialsClosure());
 		mapAndFindFirst(CodeArtifactRepository::getUrl, Optional.of(origin), urlBase, arnBase, paramBase)
 			.ifPresent(result::setUrl);
 

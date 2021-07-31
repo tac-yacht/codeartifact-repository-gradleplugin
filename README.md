@@ -4,14 +4,18 @@ This is enhanced gradle repository configration for AWS CodeArtifact.
 
 ## Getting Started
 
-### set repository
+1. set repository.any style.
+2. set credentials.any style.
+3. finish!
 
-#### style A
+## set repository
+
+### style A
 
 [GetRepositoryEndpoint](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codeartifact/get-repository-endpoint.html) request parameters.
 
 ```gradle
-repository {
+repositories {
     maven(CodeArtifact) {
         domainName = "domain-name"
         repository = "repo"
@@ -23,30 +27,61 @@ repository {
 }
 ```
 
-#### style B
+### style B
 
 ARN. response from CreateRepository, DescribeRepository, etc.
 
 ```gradle
-repository {
+repositories {
     maven(CodeArtifact) {
         arn = "arn:aws:codeartifact:us-west-2:111122223333:repository/test-domain/test-repo"
     }
 }
 ```
 
-#### style C
+### style C
 
 URL. response from GetRepositoryEndpoint.
 
 ```gradle
-repository {
+repositories {
     maven(CodeArtifact) {
         url = "https://test-domain-111122223333.d.codeartifact.us-west-2.amazonaws.com/npm/test-repo/"
     }
 }
 ```
 
-### credentials
+## set credentials
 
-coming soon
+**warning** ``` credentials(AwsCredentials) ``` is not use.
+
+### style 1
+
+standard style.  
+before set env. see [refarence](https://docs.aws.amazon.com/codeartifact/latest/ug/tokens-authentication.html#env-var)
+
+```gradle
+repositories {
+    maven(CodeArtifact) {
+        credentials {
+            username = 'aws'
+            password = System.env.CODEARTIFACT_AUTH_TOKEN
+        }
+    }
+}
+```
+
+### style 2
+
+auto get auth token from awsCredentials.
+
+```gradle
+repositories {
+    maven(CodeArtifact) {
+        credentials(AwsToPasswordCredentials) {
+            accessKey "myAccessKey"
+            secretKey "mySecret"
+        }
+    }
+}
+```
