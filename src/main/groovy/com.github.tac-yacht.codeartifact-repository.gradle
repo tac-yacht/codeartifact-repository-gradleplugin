@@ -3,11 +3,16 @@ import com.iyher.gradle.plugin.codeartifact_repository.*
 def codeartifact(CodeArtifactMarker marker, Closure closure) {
 	def resolver = new CodeArtifactResolver(project)
 	def expand = resolver.resolve(closure)
-	repositories.maven(closure >> expand)
+
+	repositories.maven(expand)
 }
+
+def dummyCredentials(CodeArtifactMarker marker) {}
+def dummyCredentials(CodeArtifactMarker marker, Closure closure) {}
 
 repositories.metaClass {
 	CodeArtifact = CodeArtifactMarker.MARKER
+	AwsToPasswordCredentials = CodeArtifactMarker.MARKER
 	maven << this.&codeartifact
 	
 	//required syncing /codeartifact-repository-gradleplugin/src/main/java/com/iyher/gradle/plugin/codeartifact_repository/CodeArtifactRepository.java
@@ -19,4 +24,5 @@ repositories.metaClass {
 	domainOwner = null
 	repository = null
 	region = null
+	credentials << this.&dummyCredentials
 }

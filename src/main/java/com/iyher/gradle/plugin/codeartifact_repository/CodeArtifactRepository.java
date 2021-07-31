@@ -1,6 +1,8 @@
 package com.iyher.gradle.plugin.codeartifact_repository;
 import java.net.URI;
 
+import groovy.lang.Closure;
+
 //required syncing /codeartifact-repository-gradleplugin/src/main/groovy/com.github.tac-yacht.codeartifact-repository.gradle
 public interface CodeArtifactRepository {
 	
@@ -20,4 +22,6 @@ public interface CodeArtifactRepository {
 	String getDomainOwner();
 	void setDomainOwner(String domainOwner);
 	
+	void credentials(CodeArtifactMarker marker, Closure<?> action);
+	public Closure<?> getAwsCredentialsClosure();
 }

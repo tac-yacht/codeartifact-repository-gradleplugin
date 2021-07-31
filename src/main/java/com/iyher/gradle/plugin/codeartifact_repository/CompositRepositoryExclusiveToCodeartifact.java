@@ -13,6 +13,8 @@ import org.gradle.api.artifacts.repositories.PasswordCredentials;
 import org.gradle.api.artifacts.repositories.RepositoryContentDescriptor;
 import org.gradle.api.credentials.Credentials;
 
+import groovy.lang.Closure;
+
 public class CompositRepositoryExclusiveToCodeartifact implements MavenArtifactRepository, CodeArtifactRepository {
 
 	//MavenArtifactRepository original methods. but, this not used in resolving CodeArtifact.
@@ -118,5 +120,20 @@ public class CompositRepositoryExclusiveToCodeartifact implements MavenArtifactR
 	public void setDomainOwner(String domainOwner) {
 		this.domainOwner = domainOwner;
 	}
-
+	
+	//----------------------------------------------
+	//inside params
+	private Closure<?> awsCredentialsClosure;
+	
+	@Override
+	public void credentials(CodeArtifactMarker marker, Closure<?> closure) {
+		setAwsCredentialsClosure(closure);
+	}
+	@Override
+	public Closure<?> getAwsCredentialsClosure() {
+		return awsCredentialsClosure;
+	}
+	public void setAwsCredentialsClosure(Closure<?> closure) {
+		awsCredentialsClosure = closure;
+	}
 }
