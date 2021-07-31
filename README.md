@@ -79,8 +79,8 @@ auto get auth token from awsCredentials.
 repositories {
     maven(CodeArtifact) {
         credentials(AwsToPasswordCredentials) {
-            accessKey "myAccessKey"
-            secretKey "mySecret"
+            accessKey = "myAccessKey"
+            secretKey = "mySecret"
         }
     }
 }
