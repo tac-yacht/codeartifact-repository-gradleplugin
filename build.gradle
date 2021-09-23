@@ -2,6 +2,7 @@ plugins {
 	id 'java-gradle-plugin'
 	id 'groovy-gradle-plugin'
 	id 'maven-publish'
+	id 'com.gradle.plugin-publish' version '0.16.0'
 	
 	id 'eclipse'
 }
@@ -31,9 +32,31 @@ version = '0.1'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
+javadoc.options.charSet = "UTF-8"
+javadoc.options.encoding = "UTF-8"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+
+// https://github.com/gradle/gradle/issues/16273
+// https://docs.gradle.org/current/javadoc/org/gradle/plugin/devel/GradlePluginDevelopmentExtension.html
+// plugin definition can using after "extractPluginRequests" task registered.
+tasks.whenTaskAdded { task ->
+	if(!'extractPluginRequests'.equals(task.name))return
+	gradlePlugin.plugins {
+		named('com.github.tac-yacht.codeartifact-repository') {
+			displayName = 'CodeArtifact Plugin.'
+			description = 'codeArtifact more useful in gradle\'s repositories block.'
+		}
+	}
+}
+
+pluginBundle {
+	website = 'https://github.com/tac-yacht/codeartifact-repository-gradleplugin'
+	vcsUrl  = 'https://github.com/tac-yacht/codeartifact-repository-gradleplugin'
+	tags = ['aws', 'codeartifact']
+}
 
 eclipse {
 	classpath {
