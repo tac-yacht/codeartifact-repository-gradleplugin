@@ -85,3 +85,16 @@ repositories {
     }
 }
 ```
+### style 3
+
+auto get auth token from awsCredentials.
+
+```gradle
+repositories {
+    maven(CodeArtifact) {
+        credentials(AwsToPasswordCredentials) {
+            profile = "myProfile"
+        }
+    }
+}
+```
