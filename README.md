@@ -29,7 +29,7 @@ repositories {
 
 ### style B
 
-ARN. response from CreateRepository, DescribeRepository, etc.
+ARN. response from [CreateRepository](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codeartifact/create-repository.html), [DescribeRepository](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codeartifact/describe-repository.html), etc.
 
 ```gradle
 repositories {
@@ -41,7 +41,7 @@ repositories {
 
 ### style C
 
-URL. response from GetRepositoryEndpoint.
+URL. response from [GetRepositoryEndpoint](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codeartifact/get-repository-endpoint.html).
 
 ```gradle
 repositories {
@@ -98,3 +98,7 @@ repositories {
     }
 }
 ```
+
+## AWS references
+* https://docs.aws.amazon.com/codeartifact/latest/ug/maven-gradle.html
+* https://docs.aws.amazon.com/codeartifact/latest/ug/tokens-authentication.html
