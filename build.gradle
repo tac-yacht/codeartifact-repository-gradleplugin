@@ -27,7 +27,7 @@ dependencies {
 	
 }
 
-group = 'com.iyher.gradle.plugin'
+group = 'io.github.tac-yacht.codeartifact-repository'
 version = '0.1'
 
 compileJava.options.encoding = "UTF-8"
@@ -45,7 +45,7 @@ targetCompatibility = 1.8
 tasks.whenTaskAdded { task ->
 	if(!'extractPluginRequests'.equals(task.name))return
 	gradlePlugin.plugins {
-		named('com.github.tac-yacht.codeartifact-repository') {
+		named('io.github.tac-yacht.codeartifact-repository') {
 			displayName = 'CodeArtifact Plugin.'
 			description = 'codeArtifact more useful in gradle\'s repositories block.'
 		}
